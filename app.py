@@ -1,11 +1,17 @@
-from flask import Flask, render_template
-from database.db import get_db, init_db, seed_db
+import re
+
+from flask import Flask, render_template, redirect, request, session, url_for
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
 
 app = Flask(__name__)
+# Hardcoded for teaching/demo purposes only — use an environment variable in production.
+app.secret_key = "dev-secret-key-change-in-production"
 
 with app.app_context():
     init_db()
     seed_db()
+
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 # ------------------------------------------------------------------ #
@@ -17,9 +23,33 @@ def landing():
     return render_template("landing.html")
 
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html")
+
+    name = request.form.get("name", "")
+    email = request.form.get("email", "")
+    password = request.form.get("password", "")
+
+    name_clean = name.strip()
+    email_clean = email.strip().lower()
+
+    if not name_clean:
+        return render_template("register.html", error="Full name is required."), 400
+
+    if not EMAIL_RE.match(email_clean):
+        return render_template("register.html", error="Enter a valid email address."), 400
+
+    if len(password) < 8:
+        return render_template("register.html", error="Password must be at least 8 characters."), 400
+
+    if get_user_by_email(email_clean):
+        return render_template("register.html", error="An account with that email already exists."), 400
+
+    user_id = create_user(name_clean, email_clean, password)
+    session["user_id"] = user_id
+    return redirect(url_for("landing"))
 
 
 @app.route("/login")
