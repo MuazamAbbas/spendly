@@ -43,14 +43,15 @@ If `branch_name` is already taken, append a number:
 ## Step 4 — Switch to main and pull latest
 Run:
 ```
-git checkout main
-git pull origin main
+git fetch
+git switch main
+git pull
 ```
 
 ## Step 5 — Create and switch to the feature branch
 Run:
 ```
-git checkout -b <branch_name>
+git switch -c <branch_name>
 ```
 
 ## Step 6 — Research the codebase
