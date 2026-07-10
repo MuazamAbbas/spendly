@@ -22,7 +22,7 @@
     <div class="profile-stats">
         <div class="profile-stat-card">
             <span class="profile-stat-label">Total spent</span>
-            <span class="profile-stat-value">₹{{ "%.2f"|format(stats.total_spent) }}</span>
+            <span class="profile-stat-value">₨{{ "%.2f"|format(stats.total_spent) }}</span>
         </div>
         <div class="profile-stat-card">
             <span class="profile-stat-label">Transactions</span>
@@ -52,7 +52,7 @@
                         <td>{{ tx.date }}</td>
                         <td>{{ tx.description }}</td>
                         <td><span class="category-badge">{{ tx.category }}</span></td>
-                        <td class="profile-col-amount">₹{{ "%.2f"|format(tx.amount) }}</td>
+                        <td class="profile-col-amount">₨{{ "%.2f"|format(tx.amount) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -69,7 +69,7 @@
                 <div class="profile-cat-track">
                     <div class="profile-cat-bar profile-cat-bar-{{ loop.index0 % 4 + 1 }} profile-cat-w-{{ cat.percent }}"></div>
                 </div>
-                <span class="profile-cat-amount">₹{{ "%.2f"|format(cat.total) }}</span>
+                <span class="profile-cat-amount">₨{{ "%.2f"|format(cat.total) }}</span>
             </div>
             {% endfor %}
         </div>
