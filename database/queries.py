@@ -12,6 +12,18 @@ def _format_member_since(created_at):
     return dt.strftime("%B %Y")
 
 
+# Returns only fixed SQL clause text — never embed request data directly
+# into the returned `where` string; all values must travel via `params`.
+def _build_date_where(user_id, start_date, end_date):
+    where = "user_id = ?"
+    params = [user_id]
+    if start_date and end_date:
+        where += " AND date BETWEEN ? AND ?"
+        params.append(start_date)
+        params.append(end_date)
+    return where, tuple(params)
+
+
 def get_user_by_id(user_id):
     conn = get_db()
     row = conn.execute(
@@ -32,18 +44,20 @@ def get_user_by_id(user_id):
 # SUBAGENT-2: summary stats                                           #
 # ------------------------------------------------------------------ #
 
-def get_summary_stats(user_id):
+def get_summary_stats(user_id, start_date=None, end_date=None):
     conn = get_db()
+    where, params = _build_date_where(user_id, start_date, end_date)
+
     totals = conn.execute(
         "SELECT COALESCE(SUM(amount), 0) AS total_spent, "
-        "COUNT(*) AS transaction_count FROM expenses WHERE user_id = ?",
-        (user_id,),
+        f"COUNT(*) AS transaction_count FROM expenses WHERE {where}",
+        params,
     ).fetchone()
 
     top = conn.execute(
-        "SELECT category FROM expenses WHERE user_id = ? "
+        f"SELECT category FROM expenses WHERE {where} "
         "GROUP BY category ORDER BY SUM(amount) DESC, category ASC LIMIT 1",
-        (user_id,),
+        params,
     ).fetchone()
     conn.close()
 
@@ -59,12 +73,13 @@ def get_summary_stats(user_id):
 # SUBAGENT-1: transaction history                                     #
 # ------------------------------------------------------------------ #
 
-def get_recent_transactions(user_id, limit=10):
+def get_recent_transactions(user_id, limit=10, start_date=None, end_date=None):
     conn = get_db()
+    where, params = _build_date_where(user_id, start_date, end_date)
     rows = conn.execute(
         "SELECT date, description, category, amount FROM expenses "
-        "WHERE user_id = ? ORDER BY date DESC, id DESC LIMIT ?",
-        (user_id, limit),
+        f"WHERE {where} ORDER BY date DESC, id DESC LIMIT ?",
+        (*params, limit),
     ).fetchall()
     conn.close()
     return [
@@ -82,12 +97,13 @@ def get_recent_transactions(user_id, limit=10):
 # SUBAGENT-3: category breakdown                                      #
 # ------------------------------------------------------------------ #
 
-def get_category_breakdown(user_id):
+def get_category_breakdown(user_id, start_date=None, end_date=None):
     conn = get_db()
+    where, params = _build_date_where(user_id, start_date, end_date)
     rows = conn.execute(
         "SELECT category, SUM(amount) AS cat_total FROM expenses "
-        "WHERE user_id = ? GROUP BY category ORDER BY cat_total DESC, category ASC",
-        (user_id,),
+        f"WHERE {where} GROUP BY category ORDER BY cat_total DESC, category ASC",
+        params,
     ).fetchall()
     conn.close()
 
