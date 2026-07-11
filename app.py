@@ -1,4 +1,5 @@
 import re
+from datetime import date
 
 from flask import Flask, render_template, redirect, request, session, url_for
 from werkzeug.security import check_password_hash
@@ -28,6 +29,25 @@ def _initials(name):
     if len(parts) == 1:
         return parts[0][:2].upper()
     return (parts[0][0] + parts[-1][0]).upper()
+
+
+def _parse_date_filter(args):
+    start_raw = args.get("start_date", "").strip()
+    end_raw = args.get("end_date", "").strip()
+
+    if not start_raw or not end_raw:
+        return None, None
+
+    try:
+        start_dt = date.fromisoformat(start_raw)
+        end_dt = date.fromisoformat(end_raw)
+    except ValueError:
+        return None, None
+
+    if start_dt > end_dt:
+        start_raw, end_raw = end_raw, start_raw
+
+    return start_raw, end_raw
 
 
 # ------------------------------------------------------------------ #
@@ -117,6 +137,7 @@ def profile():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
+    start_date, end_date = _parse_date_filter(request.args)
 
     # ---------------------------------------------------------------- #
     # USER INFO — get_user_by_id                                        #
@@ -132,17 +153,17 @@ def profile():
     # ---------------------------------------------------------------- #
     # SUBAGENT-2: summary stats                                         #
     # ---------------------------------------------------------------- #
-    stats = get_summary_stats(user_id)
+    stats = get_summary_stats(user_id, start_date=start_date, end_date=end_date)
 
     # ---------------------------------------------------------------- #
     # SUBAGENT-1: transaction history                                   #
     # ---------------------------------------------------------------- #
-    transactions = get_recent_transactions(user_id)
+    transactions = get_recent_transactions(user_id, start_date=start_date, end_date=end_date)
 
     # ---------------------------------------------------------------- #
     # SUBAGENT-3: category breakdown                                    #
     # ---------------------------------------------------------------- #
-    breakdown = get_category_breakdown(user_id)
+    breakdown = get_category_breakdown(user_id, start_date=start_date, end_date=end_date)
     categories = [
         {"name": c["name"], "total": c["amount"], "percent": c["pct"]}
         for c in breakdown
@@ -154,6 +175,8 @@ def profile():
         stats=stats,
         transactions=transactions,
         categories=categories,
+        start_date=start_date,
+        end_date=end_date,
     )
 
 
