@@ -24,6 +24,19 @@ def _build_date_where(user_id, start_date, end_date):
     return where, tuple(params)
 
 
+def create_expense(user_id, amount, category, expense_date, description):
+    conn = get_db()
+    cursor = conn.execute(
+        "INSERT INTO expenses (user_id, amount, category, date, description) "
+        "VALUES (?, ?, ?, ?, ?)",
+        (user_id, amount, category, expense_date, (description or "")[:500] or None),
+    )
+    conn.commit()
+    expense_id = cursor.lastrowid
+    conn.close()
+    return expense_id
+
+
 def get_user_by_id(user_id):
     conn = get_db()
     row = conn.execute(

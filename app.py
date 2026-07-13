@@ -1,3 +1,4 @@
+import math
 import re
 from datetime import date
 
@@ -9,6 +10,7 @@ from database.queries import (
     get_summary_stats,
     get_recent_transactions,
     get_category_breakdown,
+    create_expense,
 )
 
 app = Flask(__name__)
@@ -20,6 +22,7 @@ with app.app_context():
     seed_db()
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+EXPENSE_CATEGORIES = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
 
 
 def _initials(name):
@@ -180,9 +183,49 @@ def profile():
     )
 
 
-@app.route("/expenses/add")
+@app.route("/analytics")
+def analytics():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+    return render_template("analytics.html")
+
+
+def _render_add_expense_error(message, form_values):
+    return render_template("add_expense.html", categories=EXPENSE_CATEGORIES,
+                            error=message, **form_values), 400
+
+
+@app.route("/expenses/add", methods=["GET", "POST"])
 def add_expense():
-    return "Add expense — coming in Step 7"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    if request.method == "GET":
+        return render_template("add_expense.html", categories=EXPENSE_CATEGORIES)
+
+    amount_raw = request.form.get("amount", "").strip()
+    category = request.form.get("category", "").strip()
+    date_raw = request.form.get("date", "").strip()
+    description = request.form.get("description", "").strip()
+    form_values = {"amount": amount_raw, "category": category, "date": date_raw, "description": description}
+
+    try:
+        amount = float(amount_raw)
+    except ValueError:
+        return _render_add_expense_error("Enter a valid amount.", form_values)
+    if not math.isfinite(amount) or amount <= 0:
+        return _render_add_expense_error("Amount must be greater than zero.", form_values)
+
+    if category not in EXPENSE_CATEGORIES:
+        return _render_add_expense_error("Select a valid category.", form_values)
+
+    try:
+        date.fromisoformat(date_raw)
+    except ValueError:
+        return _render_add_expense_error("Enter a valid date.", form_values)
+
+    create_expense(session["user_id"], amount, category, date_raw, description or None)
+    return redirect(url_for("profile"))
 
 
 @app.route("/expenses/<int:id>/edit")
