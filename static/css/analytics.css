@@ -1,115 +1,150 @@
 /* ------------------------------------------------------------------ */
-/* Analytics — Coming Soon                                             */
+/* Analytics — Monthly trend bar chart                                 */
 /* ------------------------------------------------------------------ */
 
-.analytics-section {
-    min-height: calc(100vh - 60px - 100px);
+.analytics-trend-bars {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    background: radial-gradient(circle at 50% 0%, var(--paper-warm), var(--paper) 70%);
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem;
 }
 
-.analytics-card {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    max-width: 520px;
-    background: var(--paper-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
-    padding: 3.5rem 2.5rem;
-    text-align: center;
-}
-
-.analytics-decor {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--accent-light) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-.analytics-decor-top { top: -60px; right: -60px; }
-.analytics-decor-bottom { bottom: -60px; left: -60px; }
-
-.analytics-icon {
-    position: relative;
-    width: 88px;
-    height: 88px;
-    margin: 0 auto 2rem;
+.analytics-bar-col {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--accent), #14351f);
-    border-radius: var(--radius-lg);
-    color: var(--paper);
-    font-size: 2.2rem;
-    box-shadow: 0 12px 30px rgba(26, 71, 42, 0.25);
-}
-
-.analytics-badge {
-    position: relative;
-    display: inline-block;
-    background: var(--accent);
-    color: var(--paper);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.4rem 1.1rem;
-    border-radius: 999px;
-    margin-bottom: 1.5rem;
-}
-
-.analytics-title {
-    position: relative;
-    font-family: var(--font-display);
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    color: var(--ink);
-    margin-bottom: 1rem;
-}
-
-.analytics-subtitle {
-    position: relative;
-    font-size: 0.95rem;
-    color: var(--ink-muted);
-    line-height: 1.7;
-    max-width: 380px;
-    margin: 0 auto 2rem;
-}
-
-.analytics-dots {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 0.5rem;
-    margin-bottom: 1rem;
+    flex: 1;
 }
 
-.analytics-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border);
+.analytics-bar-track {
+    width: 100%;
+    max-width: 36px;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
 }
 
-.analytics-dot-active {
-    width: 10px;
-    height: 10px;
+.analytics-bar {
+    width: 100%;
     background: var(--accent);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
-.analytics-footnote {
-    position: relative;
-    font-size: 0.85rem;
-    color: var(--ink-faint);
+.analytics-bar-label {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
 }
 
-@media (max-width: 600px) {
-    .analytics-card { padding: 2.5rem 1.5rem; }
+.analytics-bar-h-0 { height: 0%; }
+.analytics-bar-h-1 { height: 1%; }
+.analytics-bar-h-2 { height: 2%; }
+.analytics-bar-h-3 { height: 3%; }
+.analytics-bar-h-4 { height: 4%; }
+.analytics-bar-h-5 { height: 5%; }
+.analytics-bar-h-6 { height: 6%; }
+.analytics-bar-h-7 { height: 7%; }
+.analytics-bar-h-8 { height: 8%; }
+.analytics-bar-h-9 { height: 9%; }
+.analytics-bar-h-10 { height: 10%; }
+.analytics-bar-h-11 { height: 11%; }
+.analytics-bar-h-12 { height: 12%; }
+.analytics-bar-h-13 { height: 13%; }
+.analytics-bar-h-14 { height: 14%; }
+.analytics-bar-h-15 { height: 15%; }
+.analytics-bar-h-16 { height: 16%; }
+.analytics-bar-h-17 { height: 17%; }
+.analytics-bar-h-18 { height: 18%; }
+.analytics-bar-h-19 { height: 19%; }
+.analytics-bar-h-20 { height: 20%; }
+.analytics-bar-h-21 { height: 21%; }
+.analytics-bar-h-22 { height: 22%; }
+.analytics-bar-h-23 { height: 23%; }
+.analytics-bar-h-24 { height: 24%; }
+.analytics-bar-h-25 { height: 25%; }
+.analytics-bar-h-26 { height: 26%; }
+.analytics-bar-h-27 { height: 27%; }
+.analytics-bar-h-28 { height: 28%; }
+.analytics-bar-h-29 { height: 29%; }
+.analytics-bar-h-30 { height: 30%; }
+.analytics-bar-h-31 { height: 31%; }
+.analytics-bar-h-32 { height: 32%; }
+.analytics-bar-h-33 { height: 33%; }
+.analytics-bar-h-34 { height: 34%; }
+.analytics-bar-h-35 { height: 35%; }
+.analytics-bar-h-36 { height: 36%; }
+.analytics-bar-h-37 { height: 37%; }
+.analytics-bar-h-38 { height: 38%; }
+.analytics-bar-h-39 { height: 39%; }
+.analytics-bar-h-40 { height: 40%; }
+.analytics-bar-h-41 { height: 41%; }
+.analytics-bar-h-42 { height: 42%; }
+.analytics-bar-h-43 { height: 43%; }
+.analytics-bar-h-44 { height: 44%; }
+.analytics-bar-h-45 { height: 45%; }
+.analytics-bar-h-46 { height: 46%; }
+.analytics-bar-h-47 { height: 47%; }
+.analytics-bar-h-48 { height: 48%; }
+.analytics-bar-h-49 { height: 49%; }
+.analytics-bar-h-50 { height: 50%; }
+.analytics-bar-h-51 { height: 51%; }
+.analytics-bar-h-52 { height: 52%; }
+.analytics-bar-h-53 { height: 53%; }
+.analytics-bar-h-54 { height: 54%; }
+.analytics-bar-h-55 { height: 55%; }
+.analytics-bar-h-56 { height: 56%; }
+.analytics-bar-h-57 { height: 57%; }
+.analytics-bar-h-58 { height: 58%; }
+.analytics-bar-h-59 { height: 59%; }
+.analytics-bar-h-60 { height: 60%; }
+.analytics-bar-h-61 { height: 61%; }
+.analytics-bar-h-62 { height: 62%; }
+.analytics-bar-h-63 { height: 63%; }
+.analytics-bar-h-64 { height: 64%; }
+.analytics-bar-h-65 { height: 65%; }
+.analytics-bar-h-66 { height: 66%; }
+.analytics-bar-h-67 { height: 67%; }
+.analytics-bar-h-68 { height: 68%; }
+.analytics-bar-h-69 { height: 69%; }
+.analytics-bar-h-70 { height: 70%; }
+.analytics-bar-h-71 { height: 71%; }
+.analytics-bar-h-72 { height: 72%; }
+.analytics-bar-h-73 { height: 73%; }
+.analytics-bar-h-74 { height: 74%; }
+.analytics-bar-h-75 { height: 75%; }
+.analytics-bar-h-76 { height: 76%; }
+.analytics-bar-h-77 { height: 77%; }
+.analytics-bar-h-78 { height: 78%; }
+.analytics-bar-h-79 { height: 79%; }
+.analytics-bar-h-80 { height: 80%; }
+.analytics-bar-h-81 { height: 81%; }
+.analytics-bar-h-82 { height: 82%; }
+.analytics-bar-h-83 { height: 83%; }
+.analytics-bar-h-84 { height: 84%; }
+.analytics-bar-h-85 { height: 85%; }
+.analytics-bar-h-86 { height: 86%; }
+.analytics-bar-h-87 { height: 87%; }
+.analytics-bar-h-88 { height: 88%; }
+.analytics-bar-h-89 { height: 89%; }
+.analytics-bar-h-90 { height: 90%; }
+.analytics-bar-h-91 { height: 91%; }
+.analytics-bar-h-92 { height: 92%; }
+.analytics-bar-h-93 { height: 93%; }
+.analytics-bar-h-94 { height: 94%; }
+.analytics-bar-h-95 { height: 95%; }
+.analytics-bar-h-96 { height: 96%; }
+.analytics-bar-h-97 { height: 97%; }
+.analytics-bar-h-98 { height: 98%; }
+.analytics-bar-h-99 { height: 99%; }
+.analytics-bar-h-100 { height: 100%; }
+
+@media (max-width: 700px) {
+    .analytics-trend-bars {
+        gap: 0.5rem;
+        padding: 0 1rem 1rem;
+    }
+    .analytics-bar-track {
+        height: 100px;
+    }
 }

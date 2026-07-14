@@ -37,6 +37,18 @@ def _initials(name):
     return (parts[0][0] + parts[-1][0]).upper()
 
 
+def _build_trend(trend_data):
+    max_amount = max(entry["amount"] for entry in trend_data)
+    return [
+        {
+            "month": entry["month"],
+            "amount": entry["amount"],
+            "percent": round(entry["amount"] / max_amount * 100),
+        }
+        for entry in trend_data
+    ]
+
+
 def _parse_date_filter(args):
     start_raw = args.get("start_date", "").strip()
     end_raw = args.get("end_date", "").strip()
@@ -190,7 +202,58 @@ def profile():
 def analytics():
     if not session.get("user_id"):
         return redirect(url_for("login"))
-    return render_template("analytics.html")
+
+    stats = {
+        "total_spent": 342.75,
+        "avg_transaction": 42.84,
+        "transaction_count": 8,
+    }
+
+    trend_data = [
+        {"month": "Feb", "amount": 210.00},
+        {"month": "Mar", "amount": 265.50},
+        {"month": "Apr", "amount": 180.25},
+        {"month": "May", "amount": 310.00},
+        {"month": "Jun", "amount": 295.75},
+        {"month": "Jul", "amount": 342.75},
+    ]
+    trend = _build_trend(trend_data)
+
+    categories = [
+        {"name": "Food", "total": 120.50, "percent": 35},
+        {"name": "Bills", "total": 95.00, "percent": 28},
+        {"name": "Transport", "total": 68.25, "percent": 20},
+        {"name": "Entertainment", "total": 59.00, "percent": 17},
+    ]
+
+    top_expenses = [
+        {
+            "date": "2026-07-05",
+            "description": "Internet bill",
+            "category": "Bills",
+            "amount": 120.00,
+        },
+        {
+            "date": "2026-07-12",
+            "description": "Clothing",
+            "category": "Shopping",
+            "amount": 89.99,
+        },
+        {
+            "date": "2026-07-01",
+            "description": "Grocery shopping",
+            "category": "Food",
+            "amount": 45.50,
+        },
+    ]
+
+    return render_template(
+        "analytics.html",
+        stats=stats,
+        trend=trend,
+        categories=categories,
+        top_expenses=top_expenses,
+    )
 
 
 def _validate_expense_form(form):
