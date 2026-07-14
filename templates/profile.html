@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_category_bars.html" import category_bars %}
 
 {% block title %}Profile — Spendly{% endblock %}
 
@@ -88,17 +89,7 @@
 
     <div class="profile-table-card">
         <h2 class="profile-card-title">Category breakdown</h2>
-        <div class="profile-categories">
-            {% for cat in categories %}
-            <div class="profile-cat-row">
-                <span class="profile-cat-name">{{ cat.name }}</span>
-                <div class="profile-cat-track">
-                    <div class="profile-cat-bar profile-cat-bar-{{ loop.index0 % 4 + 1 }} profile-cat-w-{{ cat.percent }}"></div>
-                </div>
-                <span class="profile-cat-amount">₨{{ "%.2f"|format(cat.total) }}</span>
-            </div>
-            {% endfor %}
-        </div>
+        {{ category_bars(categories) }}
     </div>
 
 </section>
