@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Expense — Spendly{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-container">
+
+        <div class="auth-header">
+            <h1 class="auth-title">Edit expense</h1>
+            <p class="auth-subtitle">Update this transaction's details</p>
+        </div>
+
+        <div class="auth-card">
+            {% if error %}
+            <div class="auth-error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('edit_expense', id=expense_id) }}">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="text" id="amount" name="amount"
+                           class="form-input" placeholder="0.00"
+                           value="{{ amount or '' }}" autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="form-input">
+                        <option value="" disabled {% if not category %}selected{% endif %}>Select a category</option>
+                        {% for c in categories %}
+                        <option value="{{ c }}" {% if category == c %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date"
+                           class="form-input" value="{{ date or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description <span class="form-optional">(optional)</span></label>
+                    <input type="text" id="description" name="description"
+                           class="form-input" placeholder="e.g. Grocery shopping"
+                           value="{{ description or '' }}">
+                </div>
+                <button type="submit" class="btn-submit">Save changes</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

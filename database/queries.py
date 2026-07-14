@@ -24,17 +24,52 @@ def _build_date_where(user_id, start_date, end_date):
     return where, tuple(params)
 
 
+def _clean_description(description):
+    return (description or "")[:500] or None
+
+
 def create_expense(user_id, amount, category, expense_date, description):
     conn = get_db()
     cursor = conn.execute(
         "INSERT INTO expenses (user_id, amount, category, date, description) "
         "VALUES (?, ?, ?, ?, ?)",
-        (user_id, amount, category, expense_date, (description or "")[:500] or None),
+        (user_id, amount, category, expense_date, _clean_description(description)),
     )
     conn.commit()
     expense_id = cursor.lastrowid
     conn.close()
     return expense_id
+
+
+def get_expense_by_id(expense_id, user_id):
+    conn = get_db()
+    row = conn.execute(
+        "SELECT id, amount, category, date, description FROM expenses "
+        "WHERE id = ? AND user_id = ?",
+        (expense_id, user_id),
+    ).fetchone()
+    conn.close()
+    if row is None:
+        return None
+    return {
+        "id": row["id"],
+        "amount": row["amount"],
+        "category": row["category"],
+        "date": row["date"],
+        "description": row["description"],
+    }
+
+
+def update_expense(expense_id, user_id, amount, category, expense_date, description):
+    conn = get_db()
+    conn.execute(
+        "UPDATE expenses SET amount = ?, category = ?, date = ?, description = ? "
+        "WHERE id = ? AND user_id = ?",
+        (amount, category, expense_date, _clean_description(description),
+         expense_id, user_id),
+    )
+    conn.commit()
+    conn.close()
 
 
 def get_user_by_id(user_id):
@@ -90,13 +125,14 @@ def get_recent_transactions(user_id, limit=10, start_date=None, end_date=None):
     conn = get_db()
     where, params = _build_date_where(user_id, start_date, end_date)
     rows = conn.execute(
-        "SELECT date, description, category, amount FROM expenses "
+        "SELECT id, date, description, category, amount FROM expenses "
         f"WHERE {where} ORDER BY date DESC, id DESC LIMIT ?",
         (*params, limit),
     ).fetchall()
     conn.close()
     return [
         {
+            "id": row["id"],
             "date": row["date"],
             "description": row["description"],
             "category": row["category"],
